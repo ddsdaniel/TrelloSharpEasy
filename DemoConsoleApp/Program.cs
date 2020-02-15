@@ -7,12 +7,12 @@ namespace DemoConsoleApp
     {
         static void Main(string[] args)
         {
-            var appKey = "8b51561a66106fabea5ab91fd31f86e2";
-            var userToken = "111a737b23e7afe3eb94462753239f7377af921cdcf36480aeab17800faaa6a0";
+            var appKey = "";
+            var userToken = "";
 
             var easyService = new EasyService(appKey, userToken);
 
-            var board = easyService.GetBoard("5e2774560cba331e300b036b");
+            var board = easyService.GetBoard("");
 
             var list = board.Lists.Find(l => l.Name.Equals("Aguardando Aprovação"));
             var sb = new StringBuilder();
