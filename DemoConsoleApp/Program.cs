@@ -11,14 +11,40 @@ namespace DemoConsoleApp
         {
             var appKey = Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_APP_KEY", EnvironmentVariableTarget.User);
             var userToken = Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_USER_TOKEN", EnvironmentVariableTarget.User);
-            var boardId = Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_BOARD_ID", EnvironmentVariableTarget.User);
-            var hourlyRate = Convert.ToDecimal(Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_HOURLY_RATE", EnvironmentVariableTarget.User));
 
             var easyService = new EasyService(appKey, userToken);
 
+            //DemoBudget(easyService);
+            DemoListCards(easyService);
+        }
+
+        private static void DemoListCards(EasyService easyService)
+        {
+            var boardId = Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_BOARD_ID", EnvironmentVariableTarget.User);
+
             var board = easyService.GetBoard(boardId);
 
-            var list = board.Lists.Find(l => l.Name.Equals("Aguardando Aprovação"));
+            var sb = new StringBuilder();
+
+            foreach (var list in board.Lists)
+            {
+                foreach (var card in list.Cards)
+                {
+                    sb.AppendLine(card.Name);
+                }
+            }
+
+            var tasks = sb.ToString();
+        }
+
+        static void DemoBudget(EasyService easyService)
+        {
+            var boardId = Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_BOARD_ID", EnvironmentVariableTarget.User);
+            var hourlyRate = Convert.ToDecimal(Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_HOURLY_RATE", EnvironmentVariableTarget.User));
+
+            var board = easyService.GetBoard(boardId);
+
+            var list = board.Lists.Find(l => l.Name.Equals("A Fazer"));
             var sb = new StringBuilder();
             var regex = new Regex(@"\(\d\d:\d\d\)");
 
