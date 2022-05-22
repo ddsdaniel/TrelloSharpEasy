@@ -1,4 +1,4 @@
-﻿using TrelloSharp.ViewModels;
+﻿using System;
 
 namespace TrelloSharpEasy.Entities
 {
@@ -14,10 +14,6 @@ namespace TrelloSharpEasy.Entities
             Checked = isChecked;
         }
 
-        public CheckItem(CheckItemViewModel checkItemViewModel)
-            : this(checkItemViewModel.Id, checkItemViewModel.Name, checkItemViewModel.State.Equals("complete"))
-        {
-
-        }
+        public override string ToString() => Name;
     }
 }

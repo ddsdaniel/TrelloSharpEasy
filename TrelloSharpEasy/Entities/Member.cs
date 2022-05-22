@@ -1,4 +1,4 @@
-﻿using TrelloSharp.ViewModels;
+﻿using System;
 
 namespace TrelloSharpEasy.Entities
 {
@@ -14,10 +14,6 @@ namespace TrelloSharpEasy.Entities
             UserName = userName;
         }
 
-        public Member(MemberViewModel vm)
-            :this(vm.Id, vm.FullName, vm.Username)
-        {
-
-        }
+        public override string ToString() => FullName;
     }
 }

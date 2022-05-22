@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TrelloSharpEasy.Entities
+﻿namespace TrelloSharpEasy.Entities
 {
     public abstract class EntityBase
     {
@@ -13,5 +9,9 @@ namespace TrelloSharpEasy.Entities
             Id = id;
         }
 
+        public void AtualizarId(string id)
+        {
+            Id = id;
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using TrelloSharp.ViewModels;
+﻿using System;
 
 namespace TrelloSharpEasy.Entities
 {
@@ -14,10 +14,6 @@ namespace TrelloSharpEasy.Entities
             Color = color;
         }
 
-        public Label(LabelViewModel labelViewModel)
-            : this(labelViewModel.Id, labelViewModel.Name, labelViewModel.Color)
-        {
-
-        }
+        public override string ToString() => Name;
     }
 }

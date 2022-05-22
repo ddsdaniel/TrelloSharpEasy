@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using TrelloSharp.ViewModels;
 
 namespace TrelloSharpEasy.Entities
 {
@@ -16,14 +14,6 @@ namespace TrelloSharpEasy.Entities
             Items = items;
         }
 
-        public CheckList(CheckListViewModel checkListViewModel)
-            :this(
-                 checkListViewModel.Id, 
-                 checkListViewModel.Name, 
-                 checkListViewModel.CheckItems.Select(vm => new CheckItem(vm)).ToList()
-                 )
-        {
-
-        }
+        public override string ToString() => Name;
     }
 }

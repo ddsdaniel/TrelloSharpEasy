@@ -1,4 +1,6 @@
-﻿namespace TrelloSharpEasy.Entities
+﻿using System;
+
+namespace TrelloSharpEasy.Entities
 {
     public abstract class CustomField<T> : EntityBase
     {
