@@ -22,35 +22,35 @@ namespace TrelloSharpEasy.Services
             _logger = logger;
         }
 
-        public List<Board> GetBoards(string organizationId, BoardFilter boardFilter)
+        public async Task<List<Board>> GetBoardsAsync(string organizationId, BoardFilter boardFilter)
         {
             var organizationViewModel = new OrganizationViewModel();
             var organizationApiService = new OrganizationApiService(organizationId, AppKey, UserToken, _logger);
 
-            var boardsViewModel = organizationApiService.GetBoardsAsync(boardFilter).Result;
+            var boardsViewModel = await organizationApiService.GetBoardsAsync(boardFilter);
 
             var boards = new List<Board>();
 
             foreach (var boardViewModel in boardsViewModel)
             {
-                Board board = GetBoard(boardViewModel.Id);
+                Board board = await GetBoardAsync(boardViewModel.Id);
                 boards.Add(board);
             }
 
             return boards;
         }
 
-        public Board GetBoard(string boardId)
+        public async Task<Board> GetBoardAsync(string boardId, bool incluirActions = true, bool incluirAnexos = true)
         {
             var boardApiService = new BoardApiService(AppKey, UserToken, _logger);
             var cardApiService = new CardApiService(AppKey, UserToken, _logger);
 
-            var boardViewModel = boardApiService.GetBoard(boardId).Result;
-            var listsViewModel = boardApiService.GetLists(boardId).Result;
-            var membersViewModel = boardApiService.GetMembers(boardId).Result;
-            var labelsViewModel = boardApiService.GetLabelsAsync(boardId).Result;
-            var cardsViewModel = boardApiService.GetCardsAsync(boardId).Result;
-            var checkLists = boardApiService.GetCheckLists(boardId).Result;
+            var boardViewModel = await boardApiService.GetBoardAsync(boardId);
+            var listsViewModel = await boardApiService.GetListsAsync(boardId);
+            var membersViewModel = await boardApiService.GetMembersAsync(boardId);
+            var labelsViewModel = await boardApiService.GetLabelsAsync(boardId);
+            var cardsViewModel = await boardApiService.GetCardsAsync(boardId);
+            var checkLists = await boardApiService.GetCheckListsAsync(boardId);
 
             var listas = new List<List>();
 
@@ -61,34 +61,37 @@ namespace TrelloSharpEasy.Services
 
                 foreach (var cardViewModel in cardsDaListaViewModel)
                 {
-                    var attachments = cardApiService
-                        .GetAttachments(cardViewModel.Id)
-                        .Result
-                        .Select(a => new Attachment
-                            (
-                                id: a.Id,
-                                bytes: a.Bytes,
-                                date: a.Date,
-                                edgeColor: a.EdgeColor,
-                                idMember: a.IdMember,
-                                isUpload: a.IsUpload,
-                                mimeType: a.MimeType,
-                                name: a.Name,
-                                url: a.Url,
-                                pos: a.Pos,
-                                fileName: a.FileName
-                            ))
-                        .ToList();
+                    var attachments = new List<Attachment>();
 
-                    if (cardViewModel.ShortUrl == "https://trello.com/c/2HU6Ln2J")
+                    if (incluirAnexos)
                     {
-                        var x = 0;
+                        var attachmentsViewModel = await cardApiService.GetAttachmentsAsync(cardViewModel.Id);
+
+                        attachments
+                            .Select(a => new Attachment
+                                (
+                                    id: a.Id,
+                                    bytes: a.Bytes,
+                                    date: a.Date,
+                                    edgeColor: a.EdgeColor,
+                                    idMember: a.IdMember,
+                                    isUpload: a.IsUpload,
+                                    mimeType: a.MimeType,
+                                    name: a.Name,
+                                    url: a.Url,
+                                    pos: a.Pos,
+                                    fileName: a.FileName
+                                ))
+                            .ToList();
                     }
 
-                    var actions = cardApiService
-                        .GetActions(cardViewModel.Id)
-                        .Result
-                        .Select(a => new Action
+                    var actions = new List<Entities.Action>();
+
+                    if (incluirActions)
+                    {
+                        var actionsViewModel = await cardApiService.GetActionsAsync(cardViewModel.Id);
+
+                        actions = actionsViewModel.Select(a => new Entities.Action
                             (
                                 actionId: a.Id,
                                 idMemberCreator: a.idMemberCreator,
@@ -98,6 +101,7 @@ namespace TrelloSharpEasy.Services
                                 date: a.date
                             ))
                         .ToList();
+                    }
 
                     var membrosDoCard = membersViewModel
                         .Where(m => cardViewModel.IdMembers.Contains(m.Id))

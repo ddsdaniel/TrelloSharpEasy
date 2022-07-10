@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using TrelloSharpEasy.Services;
@@ -9,10 +10,14 @@ namespace DemoConsoleApp
     {
         static void Main(string[] args)
         {
-            var appKey = Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_APP_KEY", EnvironmentVariableTarget.User);
-            var userToken = Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_USER_TOKEN", EnvironmentVariableTarget.User);
+            //var appKey = Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_APP_KEY", EnvironmentVariableTarget.User);
+            //var userToken = Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_USER_TOKEN", EnvironmentVariableTarget.User);
 
-            var easyService = new EasyService(appKey, userToken);
+            var trelloAppKey = "8b51561a66106fabea5ab91fd31f86e2";
+            var trelloUserToken = "111a737b23e7afe3eb94462753239f7377af921cdcf36480aeab17800faaa6a0";
+
+            var fakeLogger = new FakeLogger<EasyService>();
+            var easyService = new EasyService(trelloAppKey, trelloUserToken, fakeLogger);
 
             //DemoBudget(easyService);
             DemoListCards(easyService);
@@ -20,9 +25,10 @@ namespace DemoConsoleApp
 
         private static void DemoListCards(EasyService easyService)
         {
-            var boardId = Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_BOARD_ID", EnvironmentVariableTarget.User);
+            //var boardId = Environment.GetEnvironmentVariable("TRELLO_SHARP_EASY_BOARD_ID", EnvironmentVariableTarget.User);
+            var boardId = "5e93acca8ab6967b32e6fd9d";
 
-            var board = easyService.GetBoard(boardId);
+            var board = easyService.GetBoard(boardId, false, false);
 
             var sb = new StringBuilder();
 
@@ -30,6 +36,7 @@ namespace DemoConsoleApp
             {
                 foreach (var card in list.Cards)
                 {
+                    Console.WriteLine(card.Name);
                     sb.AppendLine(card.Name);
                 }
             }
