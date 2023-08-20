@@ -16,6 +16,9 @@ namespace TrelloSharpEasy.Entities
         public string ListName { get; private set; }
         public List<Action> Actions { get; private set; }
         public List<Attachment> Attachments { get; private set; }
+        public string AllLabels => String.Join(' ', Labels
+                        .OrderBy(label => label.Name)
+                        .Select(label => $"#{label.Name}"));
 
         public Card(
             string cardId,
